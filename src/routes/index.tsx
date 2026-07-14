@@ -159,12 +159,25 @@ function Index() {
 
           {recipe && (
             <article className="mt-6 rounded-lg bg-white/5 p-6 print:bg-white print:p-0 print:text-black">
-              {recipe.title && (
-                <h2 className="mb-4 text-2xl font-bold print:text-black">{recipe.title}</h2>
+              {recipe.name && (
+                <h2 className="mb-4 text-2xl font-bold print:text-black">{recipe.name}</h2>
               )}
-              <pre className="whitespace-pre-wrap font-sans text-[15px] leading-relaxed text-white/90 print:text-black">
-                {recipe.text}
-              </pre>
+              <section className="mb-6">
+                <h3 className="mb-2 text-lg font-semibold print:text-black">Ingredients</h3>
+                <ul className="list-disc space-y-1 pl-6 text-[15px] leading-relaxed text-white/90 print:text-black">
+                  {recipe.ingredients.map((ing, i) => (
+                    <li key={i}>{ing}</li>
+                  ))}
+                </ul>
+              </section>
+              <section>
+                <h3 className="mb-2 text-lg font-semibold print:text-black">Directions</h3>
+                <ol className="list-decimal space-y-2 pl-6 text-[15px] leading-relaxed text-white/90 print:text-black">
+                  {recipe.directions.map((step, i) => (
+                    <li key={i}>{step}</li>
+                  ))}
+                </ol>
+              </section>
             </article>
           )}
         </main>
