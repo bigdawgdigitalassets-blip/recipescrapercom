@@ -77,10 +77,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "RecipeStripper — Clean, printable recipes from any URL" },
+      { title: "Recipe Scraper — Clean, printable recipes from any URL" },
       { name: "description", content: "Paste a recipe URL and get just the recipe text — no ads, no life stories. Copy, print, or scale ingredients." },
       { name: "author", content: "RecipeStripper" },
-      { property: "og:title", content: "RecipeStripper — Clean, printable recipes" },
+      { property: "og:title", content: "Recipe Scraper — Clean, printable recipes" },
       { property: "og:description", content: "Paste a recipe URL and get just the recipe text." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
