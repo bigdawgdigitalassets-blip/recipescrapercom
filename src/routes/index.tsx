@@ -31,14 +31,17 @@ function AdSlot({ label, className }: { label: string; className?: string }) {
   );
 }
 
-function stripMarkdown(md: string): string {
-  return md
-    .replace(/!\[[^\]]*\]\([^)]*\)/g, "")
-    .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
-    .replace(/^#{1,6}\s+/gm, "")
-    .replace(/[*_`>]+/g, "")
-    .replace(/\n{3,}/g, "\n\n")
-    .trim();
+type Recipe = { name: string; ingredients: string[]; directions: string[] };
+
+function recipeToText(r: Recipe): string {
+  const parts: string[] = [];
+  if (r.name) parts.push(r.name, "");
+  parts.push("Ingredients", ...r.ingredients.map((i) => `- ${i}`), "");
+  parts.push(
+    "Directions",
+    ...r.directions.map((d, i) => `${i + 1}. ${d}`),
+  );
+  return parts.join("\n");
 }
 
 function Index() {
@@ -47,7 +50,7 @@ function Index() {
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [recipe, setRecipe] = useState<{ title: string; text: string } | null>(null);
+  const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [copied, setCopied] = useState(false);
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -58,7 +61,7 @@ function Index() {
     try {
       const res = await scrape({ data: { url } });
       if (!res.ok) setError(res.error);
-      else setRecipe({ title: res.title, text: stripMarkdown(res.markdown) });
+      else setRecipe({ name: res.name, ingredients: res.ingredients, directions: res.directions });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -68,8 +71,7 @@ function Index() {
 
   const onCopy = async () => {
     if (!recipe) return;
-    const content = recipe.title ? `${recipe.title}\n\n${recipe.text}` : recipe.text;
-    await navigator.clipboard.writeText(content);
+    await navigator.clipboard.writeText(recipeToText(recipe));
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
@@ -157,12 +159,25 @@ function Index() {
 
           {recipe && (
             <article className="mt-6 rounded-lg bg-white/5 p-6 print:bg-white print:p-0 print:text-black">
-              {recipe.title && (
-                <h2 className="mb-4 text-2xl font-bold print:text-black">{recipe.title}</h2>
+              {recipe.name && (
+                <h2 className="mb-4 text-2xl font-bold print:text-black">{recipe.name}</h2>
               )}
-              <pre className="whitespace-pre-wrap font-sans text-[15px] leading-relaxed text-white/90 print:text-black">
-                {recipe.text}
-              </pre>
+              <section className="mb-6">
+                <h3 className="mb-2 text-lg font-semibold print:text-black">Ingredients</h3>
+                <ul className="list-disc space-y-1 pl-6 text-[15px] leading-relaxed text-white/90 print:text-black">
+                  {recipe.ingredients.map((ing, i) => (
+                    <li key={i}>{ing}</li>
+                  ))}
+                </ul>
+              </section>
+              <section>
+                <h3 className="mb-2 text-lg font-semibold print:text-black">Directions</h3>
+                <ol className="list-decimal space-y-2 pl-6 text-[15px] leading-relaxed text-white/90 print:text-black">
+                  {recipe.directions.map((step, i) => (
+                    <li key={i}>{step}</li>
+                  ))}
+                </ol>
+              </section>
             </article>
           )}
         </main>
