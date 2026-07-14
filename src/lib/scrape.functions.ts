@@ -223,7 +223,7 @@ export const scrapeRecipe = createServerFn({ method: "POST" })
         (c): c is Recipe => !!c && c.ingredients.length > 0 && c.directions.length > 0,
       );
       if (!picked) {
-        return { ok: false as const, error: "Could not find a recipe on that page." };
+        return { ok: false as const, error: "We're sorry, that site doesn't play with us." };
       }
       return {
         ok: true as const,
