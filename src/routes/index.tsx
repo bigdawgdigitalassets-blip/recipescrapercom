@@ -31,14 +31,17 @@ function AdSlot({ label, className }: { label: string; className?: string }) {
   );
 }
 
-function stripMarkdown(md: string): string {
-  return md
-    .replace(/!\[[^\]]*\]\([^)]*\)/g, "")
-    .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
-    .replace(/^#{1,6}\s+/gm, "")
-    .replace(/[*_`>]+/g, "")
-    .replace(/\n{3,}/g, "\n\n")
-    .trim();
+type Recipe = { name: string; ingredients: string[]; directions: string[] };
+
+function recipeToText(r: Recipe): string {
+  const parts: string[] = [];
+  if (r.name) parts.push(r.name, "");
+  parts.push("Ingredients", ...r.ingredients.map((i) => `- ${i}`), "");
+  parts.push(
+    "Directions",
+    ...r.directions.map((d, i) => `${i + 1}. ${d}`),
+  );
+  return parts.join("\n");
 }
 
 function Index() {
@@ -47,7 +50,7 @@ function Index() {
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [recipe, setRecipe] = useState<{ title: string; text: string } | null>(null);
+  const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [copied, setCopied] = useState(false);
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -58,7 +61,7 @@ function Index() {
     try {
       const res = await scrape({ data: { url } });
       if (!res.ok) setError(res.error);
-      else setRecipe({ title: res.title, text: stripMarkdown(res.markdown) });
+      else setRecipe({ name: res.name, ingredients: res.ingredients, directions: res.directions });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -68,8 +71,7 @@ function Index() {
 
   const onCopy = async () => {
     if (!recipe) return;
-    const content = recipe.title ? `${recipe.title}\n\n${recipe.text}` : recipe.text;
-    await navigator.clipboard.writeText(content);
+    await navigator.clipboard.writeText(recipeToText(recipe));
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
