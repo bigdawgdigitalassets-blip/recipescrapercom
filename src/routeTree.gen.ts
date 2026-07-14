@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RatioRouteImport } from './routes/ratio'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as SitemapDotXmlRouteImport } from './routes/sitemap[.].xml'
 
 const RatioRoute = RatioRouteImport.update({
   id: '/ratio',
@@ -23,40 +22,31 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SitemapDotXmlRoute = SitemapDotXmlRouteImport.update({
-  id: '/sitemap./xml',
-  path: '/sitemap./xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ratio': typeof RatioRoute
-  '/sitemap./xml': typeof SitemapDotXmlRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ratio': typeof RatioRoute
-  '/sitemap./xml': typeof SitemapDotXmlRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/ratio': typeof RatioRoute
-  '/sitemap./xml': typeof SitemapDotXmlRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/ratio' | '/sitemap./xml'
+  fullPaths: '/' | '/ratio'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/ratio' | '/sitemap./xml'
-  id: '__root__' | '/' | '/ratio' | '/sitemap./xml'
+  to: '/' | '/ratio'
+  id: '__root__' | '/' | '/ratio'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   RatioRoute: typeof RatioRoute
-  SitemapDotXmlRoute: typeof SitemapDotXmlRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -75,21 +65,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/sitemap./xml': {
-      id: '/sitemap./xml'
-      path: '/sitemap./xml'
-      fullPath: '/sitemap./xml'
-      preLoaderRoute: typeof SitemapDotXmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   RatioRoute: RatioRoute,
-  SitemapDotXmlRoute: SitemapDotXmlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
