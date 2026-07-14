@@ -7,7 +7,7 @@ export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "RecipeStripper — Clean, printable recipes from any URL" },
+      { title: "Recipe Scraper — Clean, printable recipes from any URL" },
       {
         name: "description",
         content:
@@ -85,9 +85,12 @@ function Index() {
       </div>
 
       <header className="mx-auto max-w-6xl px-4 pt-8 pb-4 print:hidden">
-        <h1 className="text-3xl font-bold sm:text-4xl">RecipeStripper</h1>
+        <h1 className="text-3xl font-bold sm:text-4xl">Recipe Scraper</h1>
         <p className="mt-2 text-white/70">
           Paste a recipe URL. Get just the recipe — no life story, no pop-ups.
+        </p>
+        <p className="mt-1 text-sm text-white/50">
+          Works with most recipe sites, but not every site.
         </p>
       </header>
 
