@@ -17,19 +17,6 @@ export const Route = createFileRoute("/")({
   }),
 });
 
-function AdSlot({ label, className }: { label: string; className?: string }) {
-  return (
-    <div
-      className={
-        "flex items-center justify-center rounded border border-dashed border-white/30 bg-white/5 text-xs uppercase tracking-widest text-white/60 " +
-        (className ?? "")
-      }
-      aria-label={`Google AdSense placeholder: ${label}`}
-    >
-      <span>Google AdSense — {label}</span>
-    </div>
-  );
-}
 
 type Recipe = { name: string; ingredients: string[]; directions: string[] };
 
