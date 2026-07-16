@@ -158,10 +158,7 @@ function Index() {
               </section>
             </article>
           )}
-        </main>
-
-      </div>
-
+      </main>
 
       <footer className="mx-auto max-w-6xl px-4 pb-8 text-center text-xs text-white/50 print:hidden">
         Respect each site's terms of use. For personal use.
