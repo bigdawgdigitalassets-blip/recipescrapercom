@@ -82,11 +82,6 @@ function Index() {
       </header>
 
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 px-4 lg:grid-cols-[160px_1fr_160px]">
-        <aside className="hidden lg:block print:hidden">
-          <div className="sticky top-4 space-y-4">
-            <AdSlot label="Left Skyscraper" className="h-[600px] w-full" />
-          </div>
-        </aside>
 
         <main>
           <form onSubmit={onSubmit} className="print:hidden">
