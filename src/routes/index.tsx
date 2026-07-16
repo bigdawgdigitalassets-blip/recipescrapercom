@@ -17,20 +17,6 @@ export const Route = createFileRoute("/")({
   }),
 });
 
-function AdSlot({ label, className }: { label: string; className?: string }) {
-  return (
-    <div
-      className={
-        "flex items-center justify-center rounded border border-dashed border-white/30 bg-white/5 text-xs uppercase tracking-widest text-white/60 " +
-        (className ?? "")
-      }
-      aria-label={`Google AdSense placeholder: ${label}`}
-    >
-      <span>Google AdSense — {label}</span>
-    </div>
-  );
-}
-
 type Recipe = { name: string; ingredients: string[]; directions: string[] };
 
 function recipeToText(r: Recipe): string {
@@ -80,10 +66,6 @@ function Index() {
 
   return (
     <div className="min-h-screen bg-[oklch(0.20_0.06_260)] text-white">
-      <div className="mx-auto max-w-6xl px-4 pt-4 print:hidden">
-        <AdSlot label="Top Banner" className="h-24 w-full" />
-      </div>
-
       <header className="mx-auto max-w-6xl px-4 pt-8 pb-4 print:hidden">
         <h1 className="text-3xl font-bold sm:text-4xl">Recipe Scraper</h1>
         <p className="mt-2 text-white/70">
@@ -94,14 +76,7 @@ function Index() {
         </p>
       </header>
 
-      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 px-4 lg:grid-cols-[160px_1fr_160px]">
-        <aside className="hidden lg:block print:hidden">
-          <div className="sticky top-4 space-y-4">
-            <AdSlot label="Left Skyscraper" className="h-[600px] w-full" />
-          </div>
-        </aside>
-
-        <main>
+      <main className="mx-auto max-w-6xl px-4">
           <form onSubmit={onSubmit} className="print:hidden">
             <label htmlFor="recipe-url" className="mb-2 block text-sm text-white/80">
               Recipe URL
@@ -183,18 +158,7 @@ function Index() {
               </section>
             </article>
           )}
-        </main>
-
-        <aside className="hidden lg:block print:hidden">
-          <div className="sticky top-4 space-y-4">
-            <AdSlot label="Right Skyscraper" className="h-[600px] w-full" />
-          </div>
-        </aside>
-      </div>
-
-      <div className="mx-auto max-w-6xl px-4 py-8 print:hidden">
-        <AdSlot label="Bottom Banner" className="h-24 w-full" />
-      </div>
+      </main>
 
       <footer className="mx-auto max-w-6xl px-4 pb-8 text-center text-xs text-white/50 print:hidden">
         Respect each site's terms of use. For personal use.
