@@ -179,9 +179,6 @@ function Index() {
         </aside>
       </div>
 
-      <div className="mx-auto max-w-6xl px-4 py-8 print:hidden">
-        <AdSlot label="Bottom Banner" className="h-24 w-full" />
-      </div>
 
       <footer className="mx-auto max-w-6xl px-4 pb-8 text-center text-xs text-white/50 print:hidden">
         Respect each site's terms of use. For personal use.
