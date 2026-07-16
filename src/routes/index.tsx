@@ -172,11 +172,6 @@ function Index() {
           )}
         </main>
 
-        <aside className="hidden lg:block print:hidden">
-          <div className="sticky top-4 space-y-4">
-            <AdSlot label="Right Skyscraper" className="h-[600px] w-full" />
-          </div>
-        </aside>
       </div>
 
 
