@@ -17,7 +17,6 @@ export const Route = createFileRoute("/")({
   }),
 });
 
-
 type Recipe = { name: string; ingredients: string[]; directions: string[] };
 
 function recipeToText(r: Recipe): string {
