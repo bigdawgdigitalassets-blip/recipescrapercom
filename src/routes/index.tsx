@@ -66,7 +66,6 @@ function Index() {
 
   return (
     <div className="min-h-screen bg-[oklch(0.20_0.06_260)] text-white">
-
       <header className="mx-auto max-w-6xl px-4 pt-8 pb-4 print:hidden">
         <h1 className="text-3xl font-bold sm:text-4xl">Recipe Scraper</h1>
         <p className="mt-2 text-white/70">
@@ -77,9 +76,7 @@ function Index() {
         </p>
       </header>
 
-      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 px-4 lg:grid-cols-[160px_1fr_160px]">
-
-        <main>
+      <main className="mx-auto max-w-6xl px-4">
           <form onSubmit={onSubmit} className="print:hidden">
             <label htmlFor="recipe-url" className="mb-2 block text-sm text-white/80">
               Recipe URL
