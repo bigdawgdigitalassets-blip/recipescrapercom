@@ -67,9 +67,6 @@ function Index() {
 
   return (
     <div className="min-h-screen bg-[oklch(0.20_0.06_260)] text-white">
-      <div className="mx-auto max-w-6xl px-4 pt-4 print:hidden">
-        <AdSlot label="Top Banner" className="h-24 w-full" />
-      </div>
 
       <header className="mx-auto max-w-6xl px-4 pt-8 pb-4 print:hidden">
         <h1 className="text-3xl font-bold sm:text-4xl">Recipe Scraper</h1>
