@@ -1,5 +1,5 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { scrapeRecipe } from "@/lib/scrape.functions";
 
@@ -18,6 +18,43 @@ export const Route = createFileRoute("/")({
 });
 
 type Recipe = { name: string; ingredients: string[]; directions: string[] };
+
+const ADSENSE_CLIENT = "ca-pub-1236588392290854";
+
+function AdSlot({
+  slot,
+  format = "auto",
+  responsive = true,
+  className,
+  style,
+}: {
+  slot: string;
+  format?: string;
+  responsive?: boolean;
+  className?: string;
+  style?: React.CSSProperties;
+}) {
+  const ref = useRef<HTMLModElement | null>(null);
+  useEffect(() => {
+    try {
+      // @ts-expect-error adsbygoogle is injected by the AdSense script
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch {
+      // ignore
+    }
+  }, []);
+  return (
+    <ins
+      ref={ref as never}
+      className={`adsbygoogle ${className ?? ""}`}
+      style={{ display: "block", ...style }}
+      data-ad-client={ADSENSE_CLIENT}
+      data-ad-slot={slot}
+      data-ad-format={format}
+      data-full-width-responsive={responsive ? "true" : "false"}
+    />
+  );
+}
 
 function recipeToText(r: Recipe): string {
   const parts: string[] = [];
@@ -66,7 +103,12 @@ function Index() {
 
   return (
     <div className="min-h-screen bg-[oklch(0.20_0.06_260)] text-white">
-      <header className="mx-auto max-w-6xl px-4 pt-8 pb-4 print:hidden">
+      {/* Top ad */}
+      <div className="mx-auto max-w-6xl px-4 pt-4 print:hidden">
+        <AdSlot slot="0000000000" format="horizontal" />
+      </div>
+
+      <header className="mx-auto max-w-6xl px-4 pt-6 pb-4 print:hidden">
         <h1 className="text-3xl font-bold sm:text-4xl">Recipe Scraper</h1>
         <p className="mt-2 text-white/70">
           Paste a recipe URL. Get just the recipe — no life story, no pop-ups.
@@ -76,7 +118,15 @@ function Index() {
         </p>
       </header>
 
-      <main className="mx-auto max-w-6xl px-4">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 px-4 lg:grid-cols-[160px_minmax(0,1fr)_160px]">
+        {/* Left ad */}
+        <aside className="hidden lg:block print:hidden">
+          <div className="sticky top-4">
+            <AdSlot slot="0000000000" format="vertical" responsive={false} style={{ width: 160, height: 600 }} />
+          </div>
+        </aside>
+
+        <main>
           <form onSubmit={onSubmit} className="print:hidden">
             <label htmlFor="recipe-url" className="mb-2 block text-sm text-white/80">
               Recipe URL
@@ -158,7 +208,20 @@ function Index() {
               </section>
             </article>
           )}
-      </main>
+        </main>
+
+        {/* Right ad */}
+        <aside className="hidden lg:block print:hidden">
+          <div className="sticky top-4">
+            <AdSlot slot="0000000000" format="vertical" responsive={false} style={{ width: 160, height: 600 }} />
+          </div>
+        </aside>
+      </div>
+
+      {/* Bottom ad */}
+      <div className="mx-auto mt-6 max-w-6xl px-4 print:hidden">
+        <AdSlot slot="0000000000" format="horizontal" />
+      </div>
 
       <footer className="mx-auto max-w-6xl px-4 pb-8 text-center text-xs text-white/50 print:hidden">
         Respect each site's terms of use. For personal use.
