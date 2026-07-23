@@ -36,12 +36,15 @@ function AdSlot({
 }) {
   const ref = useRef<HTMLModElement | null>(null);
   useEffect(() => {
-    try {
-      // @ts-expect-error adsbygoogle is injected by the AdSense script
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch {
-      // ignore
-    }
+    const timer = window.setTimeout(() => {
+      try {
+        // @ts-expect-error adsbygoogle is injected by the AdSense script
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
+      } catch {
+        // Ads may be blocked or unavailable in preview.
+      }
+    }, 3_500);
+    return () => window.clearTimeout(timer);
   }, []);
   return (
     <ins

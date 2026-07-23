@@ -134,18 +134,78 @@ function extractFromMarkdown(md: string): Recipe | null {
   return { name, ingredients, directions };
 }
 
+function isPublicRecipeUrl(value: string): boolean {
+  try {
+    const url = new URL(value);
+    if (url.protocol !== "http:" && url.protocol !== "https:") return false;
+    const hostname = url.hostname.toLowerCase();
+    if (
+      hostname === "localhost" ||
+      hostname === "0.0.0.0" ||
+      hostname === "::1" ||
+      hostname.endsWith(".local") ||
+      hostname.endsWith(".internal") ||
+      /^127\./.test(hostname) ||
+      /^10\./.test(hostname) ||
+      /^192\.168\./.test(hostname) ||
+      /^169\.254\./.test(hostname) ||
+      /^172\.(1[6-9]|2\d|3[01])\./.test(hostname)
+    ) {
+      return false;
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function extractRecipeDirectly(url: string): Promise<Recipe | null> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10_000);
+  try {
+    const response = await fetch(url, {
+      headers: {
+        Accept: "text/html,application/xhtml+xml",
+        "User-Agent":
+          "Mozilla/5.0 (compatible; RecipeScraper/1.0; +https://recipescrapercom.lovable.app)",
+      },
+      redirect: "follow",
+      signal: controller.signal,
+    });
+    if (!response.ok || !isPublicRecipeUrl(response.url)) return null;
+    const contentType = response.headers.get("content-type") ?? "";
+    if (!contentType.includes("text/html")) return null;
+    const html = await response.text();
+    return extractJsonLdRecipe(html);
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 export const scrapeRecipe = createServerFn({ method: "POST" })
   .inputValidator((input: { url: string }) => {
     if (!input || typeof input.url !== "string") throw new Error("URL required");
     const trimmed = input.url.trim();
-    if (!/^https?:\/\/.+/i.test(trimmed)) throw new Error("Enter a valid http(s) URL");
+    if (!isPublicRecipeUrl(trimmed)) throw new Error("Enter a valid public recipe URL");
     if (trimmed.length > 2000) throw new Error("URL too long");
     return { url: trimmed };
   })
   .handler(async ({ data }) => {
+    const directRecipe = await extractRecipeDirectly(data.url);
+    if (directRecipe) {
+      return {
+        ok: true as const,
+        name: directRecipe.name,
+        ingredients: directRecipe.ingredients,
+        directions: directRecipe.directions,
+      };
+    }
+
     const apiKey = process.env.FIRECRAWL_API_KEY;
     if (!apiKey) {
-      return { ok: false as const, error: "Scraper not configured." };
+      return { ok: false as const, error: "We're sorry, that site doesn't play with us." };
     }
     try {
       const fc = new Firecrawl({ apiKey });
