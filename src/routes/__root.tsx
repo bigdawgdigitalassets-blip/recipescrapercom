@@ -122,13 +122,19 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   useEffect(() => {
-    const script = document.createElement("script");
-    script.async = true;
-    script.src =
-      "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1236588392290854";
-    script.crossOrigin = "anonymous";
-    document.head.appendChild(script);
-    return () => script.remove();
+    let script: HTMLScriptElement | null = null;
+    const timer = window.setTimeout(() => {
+      script = document.createElement("script");
+      script.async = true;
+      script.src =
+        "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1236588392290854";
+      script.crossOrigin = "anonymous";
+      document.head.appendChild(script);
+    }, 2_500);
+    return () => {
+      window.clearTimeout(timer);
+      script?.remove();
+    };
   }, []);
 
   return (
