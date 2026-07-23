@@ -1,0 +1,1 @@
+Website allows an user to enter the URL of a recipe and strips down and outputs the text recipe only. The user can then go to a secondary site to adjust ratios for how much they want to make or print the recipe.
