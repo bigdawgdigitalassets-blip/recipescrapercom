@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      // Redirects any sub-routes back to the main index entry point
+      const path = window.location.pathname;
+      window.location.replace('/' + (path.startsWith('/') ? path.slice(1) : path));
+    </script>
+  </head>
+  <body></body>
+</html>
